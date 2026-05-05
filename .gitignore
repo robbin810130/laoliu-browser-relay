@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Node.js
+node_modules/
+
+# Chrome browser data (local only)
+chrome_user_data/
+
+# Secrets and keys (NEVER commit)
+relay_server/keys/
+
+# Local data
+data/
+log/
+downloads/
+
+# WorkBuddy internal
+.workbuddy/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Config with potential secrets
+config.toml
+
+# Temporary / scratch files
+*.tmp
+*.bak
