@@ -152,6 +152,20 @@ export class TabManager {
     return this.#byTarget.get(targetId) ?? null
   }
 
+  /**
+   * Resolve a vtab-* virtual targetId to a Chrome tabId.
+   * Virtual targets use format: `vtab-{chromeTabId}`.
+   * Used by Extension.ensureAttach to attach unattached tabs.
+   */
+  resolveVtabTargetId(targetId) {
+    if (typeof targetId === 'string' && targetId.startsWith('vtab-')) {
+      const tabId = Number(targetId.slice(5))
+      if (Number.isFinite(tabId) && this.#tabs.has(tabId)) return tabId
+    }
+    // Also try #byTarget for real targetIds
+    return this.#byTarget.get(targetId) ?? null
+  }
+
   resolveTabId(sessionId, targetId) {
     if (sessionId) {
       const found = this.getBySessionId(sessionId)

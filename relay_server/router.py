@@ -174,7 +174,7 @@ class CDPRouter:
         params = request.params or {}
 
         if method == "Extension.ensureAttach":
-            # 请求 Extension attach 到指定 target
+            # 请求 Extension attach 到指定 target，等待返回 sessionId
             ext_id = self._allocate_id()
             forward_msg = {
                 "id": ext_id,
@@ -182,8 +182,25 @@ class CDPRouter:
                 "method": "Extension.ensureAttach",
                 "params": params,
             }
+            self._id_map[request.id] = ext_id
+            self._id_reverse[ext_id] = request.id
+
+            # 创建 Future 等待 Extension 响应
+            future = asyncio.get_event_loop().create_future()
+            self._pending_commands[ext_id] = future
+
             await self._send_to_extension(forward_msg)
-            return {"id": request.id, "result": {}}
+
+            try:
+                result = await asyncio.wait_for(
+                    future, timeout=config.COMMAND_TIMEOUT_MS / 1000
+                )
+                return {"id": request.id, **result}
+            except asyncio.TimeoutError:
+                self._pending_commands.pop(ext_id, None)
+                self._id_map.pop(request.id, None)
+                self._id_reverse.pop(ext_id, None)
+                return {"id": request.id, "error": "Extension.ensureAttach timeout"}
 
         elif method == "Extension.listTabs":
             ext_id = self._allocate_id()
