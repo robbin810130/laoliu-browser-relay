@@ -69,6 +69,12 @@ function findPython() {
 
   // 按优先级查找 Python（跨平台通用）
   const candidates = [
+    // 项目 venv 优先（确保依赖和密钥路径正确）
+    path.join(PROJECT_DIR, ".venv", "bin", "python3"),
+    // Windows venv 路径
+    path.join(PROJECT_DIR, ".venv", "Scripts", "python.exe"),
+    // macOS/Linux relay_server 目录内 venv 备选
+    path.join(RELAY_SERVER_DIR, ".venv", "bin", "python3"),
     "python3",
     "python",
     // macOS Homebrew
@@ -82,6 +88,8 @@ function findPython() {
 
   for (const cmd of candidates) {
     try {
+      // 绝对路径候选先检查文件是否存在，避免执行不存在的命令
+      if (path.isAbsolute(cmd) && !fs.existsSync(cmd)) continue;
       const result = execSync(`${cmd} --version 2>&1`, { encoding: "utf-8", timeout: 5000 });
       if (result.includes("Python 3.")) {
         return cmd;
@@ -176,7 +184,7 @@ async function startRelayServer(pythonCmd) {
   };
 
   relayProcess = spawn(pythonCmd, ["-m", "relay_server.main"], {
-    cwd: RELAY_SERVER_DIR,
+    cwd: PROJECT_DIR,  // 必须从项目根目录启动，确保 config.py 的 Path(__file__).parent 正确解析密钥路径
     env,
     stdio: ["ignore", "pipe", "pipe"],
     detached: false,
