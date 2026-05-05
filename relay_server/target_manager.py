@@ -185,6 +185,33 @@ class TargetManager:
     # ============================================================
     # 查询
     # ============================================================
+    def get_session_id(self, target_id: str) -> Optional[str]:
+        """通过 targetId 获取 sessionId（如果已 attach）"""
+        info = self._targets.get(target_id)
+        if info and info.sessionId:
+            return info.sessionId
+        return None
+
+    def register_session(self, target_id: str, session_id: str):
+        """注册 sessionId → targetId 映射（attach 成功后调用）"""
+        info = self._targets.get(target_id)
+        if info:
+            info.sessionId = session_id
+            info.attached = True
+            info.physical = True
+        else:
+            # 新 target（可能未 discover 就被 attach）
+            info = TargetInfo(
+                targetId=target_id,
+                type="page",
+                sessionId=session_id,
+                attached=True,
+                physical=True,
+            )
+            self._targets[target_id] = info
+        self._session_to_target[session_id] = target_id
+        logger.info(f"Session registered: sessionId={session_id}, targetId={target_id}")
+
     def get_physical_targets(self) -> list[TargetInfo]:
         """返回所有 physical=true 的 targets"""
         return [t for t in self._targets.values() if t.physical]

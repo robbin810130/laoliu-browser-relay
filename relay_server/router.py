@@ -73,6 +73,12 @@ class CDPRouter:
         if method.startswith("Extension."):
             return await self._route_extension_command(request)
 
+        # ── Target.attachToTarget → 转换为 Extension.ensureAttach ──
+        # Relay Server 需要拦截此命令，因为 vtab-* 虚拟标签不能直接
+        # 通过 chrome.debugger 转发（标签还未 attach）。
+        if method == "Target.attachToTarget":
+            return await self._handle_attach_to_target(request)
+
         # 标准 CDP 命令 → forwardCDPCommand 转发给 Extension
         ext_id = self._allocate_id()
         self._id_map[request.id] = ext_id
@@ -164,6 +170,63 @@ class CDPRouter:
             if session_id:
                 event_msg["sessionId"] = session_id
             await self._broadcast_to_cdp(event_msg)
+
+    # ============================================================
+    # Target.attachToTarget 拦截
+    # ============================================================
+    async def _handle_attach_to_target(self, request: CDPRequest) -> dict:
+        """
+        拦截 Target.attachToTarget，转换为 Extension.ensureAttach。
+
+        标准 CDP 客户端（如 MCP、Playwright）发送 Target.attachToTarget 来
+        attach 到标签页。但 vtab-* 虚拟标签尚未被 chrome.debugger attach，
+        不能直接转发。因此 Relay Server 将其转换为 Extension.ensureAttach，
+        由 Extension 执行 chrome.debugger.attach 并返回 sessionId。
+        """
+        params = request.params or {}
+        target_id = params.get("targetId", "")
+
+        # 如果目标已经在 target_manager 中有 sessionId，直接返回
+        existing = self._tm.get_session_id(target_id)
+        if existing:
+            logger.debug(f"Target.attachToTarget: {target_id} already attached, sessionId={existing}")
+            return {"id": request.id, "result": {"sessionId": existing}}
+
+        # 通过 Extension.ensureAttach 请求 attach
+        ext_id = self._allocate_id()
+        forward_msg = {
+            "id": ext_id,
+            "ts": int(time.time() * 1000),
+            "method": "forwardCDPCommand",
+            "params": {
+                "method": "Extension.ensureAttach",
+                "params": {"targetId": target_id},
+            },
+        }
+        self._id_map[request.id] = ext_id
+        self._id_reverse[ext_id] = request.id
+
+        future = asyncio.get_event_loop().create_future()
+        self._pending_commands[ext_id] = future
+
+        await self._send_to_extension(forward_msg)
+
+        try:
+            result = await asyncio.wait_for(
+                future, timeout=config.COMMAND_TIMEOUT_MS / 1000
+            )
+            # Extension.ensureAttach 返回 { targetId, sessionId }
+            ext_result = result.get("result", {})
+            session_id = ext_result.get("sessionId", "")
+            if session_id:
+                # 注册到 target_manager
+                self._tm.register_session(target_id, session_id)
+            return {"id": request.id, "result": {"sessionId": session_id}}
+        except asyncio.TimeoutError:
+            self._pending_commands.pop(ext_id, None)
+            self._id_map.pop(request.id, None)
+            self._id_reverse.pop(ext_id, None)
+            return {"id": request.id, "error": "Target.attachToTarget timeout"}
 
     # ============================================================
     # Extension 虚拟命令路由

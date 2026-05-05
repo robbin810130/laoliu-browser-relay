@@ -400,15 +400,17 @@ async function listAndAttach() {
                targets.find(t => t.type === "page") ||
                targets[0];
 
-  if (sessionId) return { sessionId, targetId: targetId || target.targetId };
-
+  // 不再缓存 sessionId，每次都重新 attach（Extension 已处理重复 attach 的情况）
   const attachResp = await sendCDPCommand("Target.attachToTarget", {
     targetId: target.targetId,
     flatten: true,
   }, { sessionId: undefined });
 
   const newSessionId = attachResp?.result?.sessionId;
-  if (newSessionId) sessionId = newSessionId;
+  if (newSessionId) {
+    sessionId = newSessionId;
+    targetId = target.targetId;
+  }
 
   return { sessionId, targetId: target.targetId };
 }
