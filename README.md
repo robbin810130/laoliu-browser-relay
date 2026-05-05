@@ -54,7 +54,7 @@
 ### 第 1 步：克隆项目
 
 ```bash
-git clone https://github.com/your-username/phoenix-browser-relay.git
+git clone https://github.com/robbin810130/phoenix-browser-relay.git
 cd phoenix-browser-relay
 ```
 
