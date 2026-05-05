@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Phoenix Relay Server — RSA 密钥对生成脚本
+LaoLiu Relay Server — RSA 密钥对生成脚本
 
 用法:
   python3 generate_keys.py         # 生成到 relay_server/keys/

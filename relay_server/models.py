@@ -1,5 +1,5 @@
 """
-Phoenix Relay Server - Pydantic 消息模型
+LaoLiu Relay Server - Pydantic 消息模型
 定义所有 WebSocket 消息的数据结构
 """
 from __future__ import annotations
@@ -57,7 +57,7 @@ class ForwardCDPEventParams(BaseModel):
 
 # ============================================================
 # Tab 事件（Extension 通过 forwardCDPEvent 发送）
-# 实际格式参考 phoenix-browser-relay/lib/cdp/tabs/manager.js:
+# 实际格式参考 laoliu-browser-relay/lib/cdp/tabs/manager.js:
 #   Extension.tabDiscovered: { sessionId, targetInfo: { targetId, type, title, url, attached } }
 #   Extension.tabUpdated:   { sessionId, targetInfo: { targetId, type, title, url, attached } }
 #   Extension.tabRemoved:   { sessionId }

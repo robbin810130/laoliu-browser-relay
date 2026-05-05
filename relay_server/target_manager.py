@@ -1,5 +1,5 @@
 """
-Phoenix Relay Server - Target 管理器
+LaoLiu Relay Server - Target 管理器
 管理 Extension 上报的标签页（virtual + physical）
 
 Extension 的 tab 管理使用 targetId + sessionId，不用 Chrome tabId。

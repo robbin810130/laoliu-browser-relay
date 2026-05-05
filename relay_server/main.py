@@ -1,5 +1,5 @@
 """
-Phoenix Relay Server - 主程序入口
+LaoLiu Relay Server - 主程序入口
 FastAPI app + uvicorn 启动 + HTTP 端点 + WebSocket 端点注册
 """
 from __future__ import annotations
@@ -28,7 +28,7 @@ logging.basicConfig(
     format="%(asctime)s [%(name)s] %(levelname)s: %(message)s",
     datefmt="%H:%M:%S",
 )
-logger = logging.getLogger("phoenix-relay")
+logger = logging.getLogger("laoliu-relay")
 
 # ============================================================
 # 全局组件
@@ -46,7 +46,7 @@ target_manager.set_on_targets_cleared(cdp_connection.notify_all_disconnected)
 # ============================================================
 # FastAPI App
 # ============================================================
-app = FastAPI(title="Phoenix Relay Server", version="1.0.0")
+app = FastAPI(title="LaoLiu Relay Server", version="1.0.0")
 
 # CORS
 app.add_middleware(
@@ -150,7 +150,7 @@ async def ws_cdp(ws: WebSocket, token: str = Query(default="")):
 def main():
     """启动 Relay Server"""
     logger.info("=" * 60)
-    logger.info("  Phoenix Relay Server")
+    logger.info("  LaoLiu Relay Server")
     logger.info(f"  监听: ws://{config.RELAY_HOST}:{config.RELAY_PORT}")
     logger.info(f"  Extension 端点: ws://{config.RELAY_HOST}:{config.RELAY_PORT}/extension")
     logger.info(f"  CDP 端点: ws://{config.RELAY_HOST}:{config.RELAY_PORT}/cdp?token=<TOKEN>")

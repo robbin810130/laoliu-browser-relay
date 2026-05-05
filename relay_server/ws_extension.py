@@ -1,5 +1,5 @@
 """
-Phoenix Relay Server - Extension WebSocket 端点
+LaoLiu Relay Server - Extension WebSocket 端点
 处理 Chrome Extension 的连接、握手、消息收发
 """
 from __future__ import annotations
@@ -140,7 +140,7 @@ class ExtensionConnection:
                 "params": {
                     "status": "version_mismatch",
                     "action": "reload",
-                    "reloadTargetKey": "phoenix-relay",
+                    "reloadTargetKey": "laoliu-relay",
                 },
             }
             await self._send_message(ack)

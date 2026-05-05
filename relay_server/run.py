@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Phoenix Relay Server 启动脚本"""
+"""LaoLiu Relay Server 启动脚本"""
 from relay_server.main import main
 
 if __name__ == "__main__":

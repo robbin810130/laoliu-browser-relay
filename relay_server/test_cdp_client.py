@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Phoenix Relay Server - CDP 客户端测试脚本 v2
+LaoLiu Relay Server - CDP 客户端测试脚本 v2
 正确处理异步事件流，测试完整链路
 """
 import asyncio

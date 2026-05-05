@@ -1,5 +1,5 @@
 """
-Phoenix Relay Server - 加密模块
+LaoLiu Relay Server - 加密模块
 RSA-OAEP 密钥交换 + AES-256-GCM 传输加密
 与 Accio Extension 的 WebCrypto API 完全兼容
 """

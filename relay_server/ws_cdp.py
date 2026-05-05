@@ -1,5 +1,5 @@
 """
-Phoenix Relay Server - CDP WebSocket 端点
+LaoLiu Relay Server - CDP WebSocket 端点
 Agent/Playwright 连接的 CDP 端点
 """
 from __future__ import annotations

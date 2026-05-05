@@ -1,5 +1,5 @@
 #!/bin/bash
-# Phoenix Relay Server 启动脚本
+# LaoLiu Relay Server 启动脚本
 # 用法: ./start.sh [port]
 #
 # 跨平台兼容:
@@ -29,7 +29,7 @@ else
   exit 1
 fi
 
-echo "🚀 Phoenix Relay Server"
+echo "🚀 LaoLiu Relay Server"
 echo "   Port: $PORT"
 echo "   Python: $PYTHON"
 echo ""

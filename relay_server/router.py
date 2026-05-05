@@ -1,5 +1,5 @@
 """
-Phoenix Relay Server - CDP 命令路由
+LaoLiu Relay Server - CDP 命令路由
 CDP 命令转发 + 事件分发 + 消息 ID 映射
 """
 from __future__ import annotations

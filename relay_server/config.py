@@ -1,5 +1,5 @@
 """
-Phoenix Relay Server - 配置模块
+LaoLiu Relay Server - 配置模块
 自建 Relay Server，替代 Accio Desktop 的 WebSocket Relay
 """
 import os
@@ -58,7 +58,7 @@ _token_file.write_text(AUTH_TOKEN)
 # 协议配置
 # ============================================================
 PROTOCOL_VERSION = 1
-PRODUCT_NAME = "Phoenix-Extension-Relay"
+PRODUCT_NAME = "LaoLiu-Extension-Relay"
 CDP_PROTOCOL_VERSION = "1.3"
 
 # ============================================================

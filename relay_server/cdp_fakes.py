@@ -1,5 +1,5 @@
 """
-Phoenix Relay Server - 伪 CDP 命令实现
+LaoLiu Relay Server - 伪 CDP 命令实现
 Relay Server 本地处理的 CDP 命令（不转发给 Extension）
 """
 from __future__ import annotations
@@ -60,7 +60,7 @@ class CDPFakeCommands:
         return {
             "protocolVersion": config.CDP_PROTOCOL_VERSION,
             "product": config.PRODUCT_NAME,
-            "revision": "@phoenix-relay",
+            "revision": "@laoliu-relay",
             "userAgent": f"{config.PRODUCT_NAME}/1.0",
             "jsVersion": "1.0",
         }

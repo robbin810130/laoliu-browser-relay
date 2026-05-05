@@ -1,8 +1,8 @@
-# Phoenix Browser Relay
+# LaoLiu Browser Relay
 
 > 🔥 通过 MCP 协议控制 Chrome 浏览器 — 自建 Relay Server + Chrome Extension，端到端加密
 
-**Phoenix Browser Relay** 让任何支持 MCP（Model Context Protocol）的 AI Agent 都能控制 Chrome 浏览器：导航网页、执行 JS、截图、点击、输入文字，全部通过端到端加密通道完成。
+**LaoLiu Browser Relay** 让任何支持 MCP（Model Context Protocol）的 AI Agent 都能控制 Chrome 浏览器：导航网页、执行 JS、截图、点击、输入文字，全部通过端到端加密通道完成。
 
 ## 架构
 
@@ -10,14 +10,14 @@
 ┌──────────────┐    stdio/MCP     ┌──────────────────┐    WebSocket     ┌────────────────────┐
 │  AI Agent    │◄────────────────►│  MCP Server      │◄────────────────►│  Relay Server      │
 │  (Claude/    │   (browser_*)    │  (Node.js)       │   /cdp?token=    │  (Python FastAPI)  │
-│   Cursor/    │                  │  phoenix-mcp/    │                  │  relay_server/     │
+│   Cursor/    │                  │  laoliu-mcp/     │                  │  relay_server/     │
 │   Cline...)  │                  │                  │                  │                    │
 └──────────────┘                  └──────────────────┘                  └────────┬───────────┘
                                                                                  │ WebSocket
                                                                                  │ /extension
                                                                        ┌─────────▼──────────┐
                                                                        │  Chrome Extension   │
-                                                                       │  phoenix-browser-   │
+                                                                       │  laoliu-browser-    │
                                                                        │  relay/             │
                                                                        │  (端到端加密)        │
                                                                        └────────────────────┘
@@ -54,8 +54,8 @@
 ### 第 1 步：克隆项目
 
 ```bash
-git clone https://github.com/robbin810130/phoenix-browser-relay.git
-cd phoenix-browser-relay
+git clone https://github.com/robbin810130/laoliu-browser-relay.git
+cd laoliu-browser-relay
 ```
 
 ### 第 2 步：安装依赖
@@ -65,7 +65,7 @@ cd phoenix-browser-relay
 pip install -r relay_server/requirements.txt
 
 # Node.js 依赖
-cd phoenix-mcp && npm install && cd ..
+cd laoliu-mcp && npm install && cd ..
 ```
 
 ### 第 3 步：生成密钥
@@ -83,7 +83,7 @@ python3 relay_server/generate_keys.py
 1. 打开 Chrome，访问 `chrome://extensions/`
 2. 开启右上角 **开发者模式**
 3. 点击 **加载已解压的扩展程序**
-4. 选择 `phoenix-browser-relay/` 目录
+4. 选择 `laoliu-browser-relay/` 目录（即项目中的 Extension 子目录）
 5. Extension 图标出现在工具栏，显示 🔴 Disconnected（正常，Relay 还没启动）
 
 ### 第 5 步：配置你的 AI Agent
@@ -97,10 +97,10 @@ python3 relay_server/generate_keys.py
 ```json
 {
   "mcpServers": {
-    "phoenix-browser": {
+    "laoliu-browser": {
       "type": "stdio",
       "command": "node",
-      "args": ["/ABSOLUTE/PATH/TO/phoenix-browser-relay/phoenix-mcp/index.js"]
+      "args": ["/ABSOLUTE/PATH/TO/laoliu-browser-relay/laoliu-mcp/index.js"]
     }
   }
 }
@@ -113,10 +113,10 @@ python3 relay_server/generate_keys.py
 ```json
 {
   "mcpServers": {
-    "phoenix-browser": {
+    "laoliu-browser": {
       "type": "stdio",
       "command": "node",
-      "args": ["/ABSOLUTE/PATH/TO/phoenix-browser-relay/phoenix-mcp/index.js"]
+      "args": ["/ABSOLUTE/PATH/TO/laoliu-browser-relay/laoliu-mcp/index.js"]
     }
   }
 }
@@ -124,7 +124,7 @@ python3 relay_server/generate_keys.py
 
 #### Cline / 其他 MCP 客户端
 
-参考上述格式，在对应配置文件中添加 `phoenix-browser` MCP Server。
+参考上述格式，在对应配置文件中添加 `laoliu-browser` MCP Server。
 
 #### WorkBuddy
 
@@ -133,10 +133,10 @@ python3 relay_server/generate_keys.py
 ```json
 {
   "mcpServers": {
-    "phoenix-browser": {
+    "laoliu-browser": {
       "type": "stdio",
       "command": "node",
-      "args": ["/ABSOLUTE/PATH/TO/phoenix-browser-relay/phoenix-mcp/index.js"]
+      "args": ["/ABSOLUTE/PATH/TO/laoliu-browser-relay/laoliu-mcp/index.js"]
     }
   }
 }
@@ -173,7 +173,7 @@ cd relay_server && python3 -m relay_server.main
 ## 项目结构
 
 ```
-phoenix-browser-relay/
+laoliu-browser-relay/
 ├── relay_server/              # Python FastAPI — WebSocket Relay
 │   ├── main.py                #   FastAPI app + 端点注册
 │   ├── config.py              #   配置（端口/超时/加密参数）
@@ -186,15 +186,14 @@ phoenix-browser-relay/
 │   ├── generate_keys.py       #   RSA 密钥对生成脚本
 │   ├── requirements.txt       #   Python 依赖
 │   └── start.sh               #   启动脚本
-├── phoenix-mcp/               # Node.js — MCP Server
+├── laoliu-mcp/               # Node.js — MCP Server
 │   ├── index.js               #   MCP Server 主程序（8 个工具）
 │   └── package.json           #   Node.js 依赖
-├── phoenix-browser-relay/     # Chrome Extension
-│   ├── manifest.json          #   扩展清单
+├── laoliu-browser-relay/      # Chrome Extension│   ├── manifest.json          #   扩展清单
 │   ├── background.js          #   Service Worker（WebSocket + 加密）
 │   ├── lib/                   #   CDP 事件处理 / 内容脚本
 │   ├── pages/                 #   Popup / Options / Install 页面
-│   └── icons/                 #   凤凰图标 🐦‍🔥
+│   └── icons/                 #   老六图标 六
 └── README.md
 ```
 
