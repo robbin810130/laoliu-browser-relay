@@ -1,25 +1,27 @@
 :root {
-  --bg: #ffffff;
-  --surface: #f4f4f5;
-  --surface-hover: #e4e4e7;
-  --border: #e4e4e7;
-  --text: #18181b;
-  --muted: #71717a;
-  --dim: #a1a1aa;
-  --accent: #14b8a6;
-  --accent-soft: rgba(20, 184, 166, 0.08);
-  --accent-border: rgba(20, 184, 166, 0.2);
-  --accent-glow: rgba(20, 184, 166, 0.15);
-  --green: #34d399;
-  --green-soft: rgba(52, 211, 153, 0.08);
-  --green-glow: rgba(52, 211, 153, 0.35);
-  --yellow: #f59e0b;
-  --yellow-soft: rgba(245, 158, 11, 0.08);
-  --yellow-glow: rgba(245, 158, 11, 0.12);
-  --red: #ef4444;
+  --bg: #fafbfc;
+  --surface: #f0f2f5;
+  --surface-hover: #e4e7ec;
+  --border: #dde1e8;
+  --text: #1a1d24;
+  --muted: #5c6370;
+  --dim: #9ca3af;
+  /* 老六品牌色：深靛蓝 */
+  --accent: #3b52a5;
+  --accent-light: #5468c8;
+  --accent-soft: rgba(59, 82, 165, 0.07);
+  --accent-border: rgba(59, 82, 165, 0.18);
+  --accent-glow: rgba(59, 82, 165, 0.18);
+  --green: #2ecc71;
+  --green-soft: rgba(46, 204, 113, 0.07);
+  --green-glow: rgba(46, 204, 113, 0.30);
+  --yellow: #f0a030;
+  --yellow-soft: rgba(240, 160, 48, 0.07);
+  --yellow-glow: rgba(240, 160, 48, 0.14);
+  --red: #e74c3c;
   --coral: #f43f5e;
 
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Noto Sans SC", system-ui, sans-serif;
   line-height: 1.55;
   color: var(--text);
 }
@@ -65,22 +67,26 @@ body {
 }
 
 .header-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #3b52a5, #5468c8);
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 4px 16px rgba(59, 82, 165, 0.25);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s;
 }
 
 .header-icon:hover {
   transform: scale(1.06) rotate(-3deg);
+  box-shadow: 0 6px 20px rgba(59, 82, 165, 0.35);
 }
 
 .header-icon img {
-  width: 36px;
-  height: 36px;
+  width: 30px;
+  height: 30px;
+  filter: brightness(10);
 }
 
 .header-text h1 {
@@ -92,15 +98,19 @@ body {
 .version-badge {
   font-size: 11px;
   font-weight: 500;
-  color: var(--muted);
-  margin-left: 4px;
-  vertical-align: baseline;
+  color: var(--accent);
+  margin-left: 6px;
+  padding: 2px 7px;
+  border-radius: 5px;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-border);
+  vertical-align: middle;
 }
 
 .header-text p {
   font-size: 13px;
   color: var(--muted);
-  margin-top: 1px;
+  margin-top: 2px;
 }
 
 /* ── Status card ── */
@@ -110,19 +120,19 @@ body {
   padding: 20px 22px;
   border-radius: 16px;
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border);
   margin-bottom: 24px;
   overflow: hidden;
   transition: border-color 0.4s, box-shadow 0.4s;
 }
 
 .status-card[data-state="connected"] {
-  border-color: rgba(52, 211, 153, 0.25);
-  box-shadow: 0 2px 16px -4px var(--green-glow);
+  border-color: rgba(46, 204, 113, 0.3);
+  box-shadow: 0 2px 20px -4px var(--green-glow);
 }
 
 .status-card[data-state="disconnected"] {
-  border-color: rgba(245, 158, 11, 0.3);
+  border-color: rgba(240, 160, 48, 0.35);
   box-shadow: 0 2px 16px -6px var(--yellow-glow);
 }
 
@@ -175,7 +185,7 @@ body {
   position: absolute;
   inset: -4px;
   border-radius: 50%;
-  border: 1.5px solid rgba(52, 211, 153, 0.3);
+  border: 1.5px solid rgba(46, 204, 113, 0.3);
   animation: indicator-ring 2.5s ease-out infinite;
 }
 
@@ -298,8 +308,8 @@ body {
 }
 
 .tab-chip-agent {
-  background: rgba(249, 115, 22, 0.08);
-  color: #f97316;
+  background: rgba(59, 82, 165, 0.08);
+  color: var(--accent);
 }
 
 .tab-chip-retained {
@@ -331,8 +341,8 @@ body {
 }
 
 .collapsible-trigger:hover {
-  color: var(--muted);
-  background: rgba(0, 0, 0, 0.03);
+  color: var(--accent);
+  background: var(--accent-soft);
 }
 
 .collapsible-trigger::-webkit-details-marker { display: none; }
@@ -392,8 +402,8 @@ body {
 }
 
 .card:hover {
-  border-color: var(--dim);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  border-color: var(--accent-border);
+  box-shadow: 0 4px 16px rgba(59, 82, 165, 0.06);
   transform: translateY(-1px);
 }
 
@@ -405,6 +415,7 @@ body {
   font-size: 13px;
   font-weight: 600;
   margin-bottom: 4px;
+  color: var(--text);
 }
 
 .card-body {
@@ -650,8 +661,8 @@ code {
 }
 
 .tab-entry-badge[data-type="agent"] {
-  background: rgba(249, 115, 22, 0.08);
-  color: #f97316;
+  background: rgba(59, 82, 165, 0.08);
+  color: var(--accent);
 }
 
 .tab-entry-badge[data-type="retained"] {
@@ -752,11 +763,11 @@ code {
 }
 
 .mini-toggle input:checked + .mini-toggle-track {
-  background: var(--green);
-  box-shadow: 0 0 8px var(--green-glow);
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent-glow);
 }
 
 .mini-toggle input:checked + .mini-toggle-track::after {
   transform: translateX(14px);
-  box-shadow: 0 0 4px var(--green-glow);
+  box-shadow: 0 0 4px var(--accent-glow);
 }

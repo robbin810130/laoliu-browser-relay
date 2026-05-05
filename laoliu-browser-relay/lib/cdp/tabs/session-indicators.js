@@ -1,7 +1,7 @@
 /**
  * Session activity indicators — spinner animation & idle tab detection.
  *
- * Manages the visual "Accio Agent" tab-group spinner and automatically
+ * Manages the visual "LaoLiu Agent" tab-group spinner and automatically
  * detaches tabs that haven't received CDP commands for a configurable period.
  *
  * Timer strategy (MV3 compatible):

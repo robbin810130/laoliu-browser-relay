@@ -1,35 +1,35 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>LaoLiu Browser Relay</title>
+    <title>老六浏览器中继</title>
     <style>
       :root {
         --bg: #ffffff;
-        --surface: #f4f4f5;
-        --surface-hover: #e4e4e7;
-        --border: #e4e4e7;
-        --text: #18181b;
-        --muted: #71717a;
-        --dim: #a1a1aa;
-        --accent: #14b8a6;
-        --accent-soft: rgba(20, 184, 166, 0.08);
-        --accent-glow: rgba(20, 184, 166, 0.2);
-        --green: #34d399;
-        --green-soft: rgba(52, 211, 153, 0.08);
-        --green-glow: rgba(52, 211, 153, 0.35);
-        --yellow: #f59e0b;
-        --yellow-soft: rgba(245, 158, 11, 0.08);
-        --yellow-glow: rgba(245, 158, 11, 0.15);
-        --red: #ef4444;
-        --coral: #f43f5e;
+        --surface: #f0f2f5;
+        --surface-hover: #e4e7ec;
+        --border: #dde1e8;
+        --text: #1a1d24;
+        --muted: #5c6370;
+        --dim: #9ca3af;
+        --accent: #3b52a5;
+        --accent-light: #5468c8;
+        --accent-soft: rgba(59, 82, 165, 0.07);
+        --accent-glow: rgba(59, 82, 165, 0.18);
+        --green: #2ecc71;
+        --green-soft: rgba(46, 204, 113, 0.07);
+        --green-glow: rgba(46, 204, 113, 0.30);
+        --yellow: #f0a030;
+        --yellow-soft: rgba(240, 160, 48, 0.07);
+        --yellow-glow: rgba(240, 160, 48, 0.15);
+        --red: #e74c3c;
       }
       * { margin: 0; padding: 0; box-sizing: border-box; }
       html { background: transparent; }
       body {
-        width: 268px;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        width: 280px;
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Noto Sans SC", system-ui, sans-serif;
         font-size: 13px;
         color: var(--text);
         background: var(--bg);
@@ -45,15 +45,24 @@
         gap: 10px;
         margin-bottom: 14px;
       }
-      .header img {
-        width: 28px;
-        height: 28px;
-        border-radius: 6px;
-        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s;
+      .header-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 9px;
+        background: linear-gradient(135deg, #3b52a5, #5468c8);
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+        box-shadow: 0 2px 8px rgba(59, 82, 165, 0.25);
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
       }
-      .header img:hover {
+      .header-icon:hover {
         transform: scale(1.1) rotate(-4deg);
-        filter: drop-shadow(0 0 6px var(--accent-glow));
+      }
+      .header-icon img {
+        width: 20px;
+        height: 20px;
+        filter: brightness(10);
       }
       .header-text {
         font-weight: 700;
@@ -61,11 +70,14 @@
         color: var(--text);
       }
       .version-badge {
-        margin-left: 6px;
+        margin-left: 4px;
         font-size: 10px;
         font-weight: 500;
-        color: var(--muted);
-        vertical-align: baseline;
+        color: var(--accent);
+        padding: 1px 5px;
+        border-radius: 4px;
+        background: var(--accent-soft);
+        vertical-align: middle;
       }
 
       /* ── Status card ── */
@@ -75,7 +87,7 @@
         gap: 10px;
         padding: 10px 12px;
         background: var(--surface);
-        border: 1px solid var(--border);
+        border: 1.5px solid var(--border);
         border-radius: 10px;
         margin-bottom: 10px;
         transition: border-color 0.4s, box-shadow 0.4s, background 0.3s;
@@ -92,7 +104,7 @@
         border-radius: inherit;
       }
       .status-card[data-state="connected"] {
-        border-color: rgba(52, 211, 153, 0.25);
+        border-color: rgba(46, 204, 113, 0.3);
         box-shadow: 0 2px 16px -4px var(--green-glow);
       }
       .status-card[data-state="connected"]::before {
@@ -100,7 +112,7 @@
         background: linear-gradient(135deg, var(--green-soft) 0%, transparent 60%);
       }
       .status-card[data-state="disconnected"] {
-        border-color: rgba(245, 158, 11, 0.3);
+        border-color: rgba(240, 160, 48, 0.35);
         box-shadow: 0 2px 12px -4px var(--yellow-glow);
       }
       .status-card[data-state="disconnected"]::before {
@@ -135,7 +147,7 @@
         box-shadow: 0 0 8px var(--green-glow);
       }
       .status-card[data-state="connected"] .status-ring::after {
-        border-color: rgba(52, 211, 153, 0.3);
+        border-color: rgba(46, 204, 113, 0.3);
         animation: ring-expand 2.5s ease-out infinite;
       }
       .status-card[data-state="disconnected"] .status-dot {
@@ -144,7 +156,7 @@
         animation: dot-pulse 1.5s ease-in-out infinite;
       }
       .status-card[data-state="disconnected"] .status-ring::after {
-        border-color: rgba(245, 158, 11, 0.2);
+        border-color: rgba(240, 160, 48, 0.2);
       }
 
       @keyframes ring-expand {
@@ -160,6 +172,7 @@
       .status-label {
         flex: 1;
         font-weight: 600;
+        font-size: 13px;
         position: relative;
       }
 
@@ -221,8 +234,8 @@
         color: #64748b;
       }
       .chip-agent {
-        background: rgba(249, 115, 22, 0.08);
-        color: #f97316;
+        background: rgba(59, 82, 165, 0.08);
+        color: var(--accent);
       }
       .chip-retained {
         background: rgba(168, 85, 247, 0.08);
@@ -341,8 +354,8 @@
         flex-shrink: 0;
       }
       .tab-badge-agent {
-        background: rgba(249, 115, 22, 0.08);
-        color: #f97316;
+        background: rgba(59, 82, 165, 0.08);
+        color: var(--accent);
       }
       .tab-badge-retained {
         background: rgba(168, 85, 247, 0.08);
@@ -381,7 +394,7 @@
       .settings-link:hover {
         color: var(--accent);
         background: var(--accent-soft);
-        border-color: rgba(20, 184, 166, 0.2);
+        border-color: rgba(59, 82, 165, 0.18);
       }
       .settings-link svg {
         width: 14px; height: 14px;
@@ -395,8 +408,8 @@
         align-items: flex-start;
         gap: 8px;
         padding: 10px 12px;
-        background: rgba(239, 68, 68, 0.06);
-        border: 1px solid rgba(239, 68, 68, 0.25);
+        background: rgba(231, 76, 60, 0.06);
+        border: 1px solid rgba(231, 76, 60, 0.25);
         border-radius: 10px;
         margin-bottom: 10px;
         color: var(--red);
@@ -427,15 +440,17 @@
   <body>
     <div class="popup">
       <div class="header anim">
-        <img src="../icons/icon128.png" alt="" />
-        <span class="header-text">LaoLiu Browser Relay<span class="version-badge" id="version-badge"></span></span>
+        <div class="header-icon">
+          <img src="../icons/icon128.png" alt="" />
+        </div>
+        <span class="header-text">老六中继<span class="version-badge" id="version-badge"></span></span>
       </div>
 
       <div class="status-card anim anim-d1" id="status-card" data-state="disabled">
         <div class="status-ring">
           <div class="status-dot" id="dot"></div>
         </div>
-        <span class="status-label" id="label">Checking…</span>
+        <span class="status-label" id="label">检测中…</span>
         <label class="toggle">
           <input type="checkbox" id="toggle" />
           <span class="toggle-track"></span>
@@ -452,7 +467,7 @@
       <div class="tabs-section anim anim-d2" id="tabs-section" data-empty="true" data-open="false">
         <div class="tabs-header" id="tabs-header">
           <svg viewBox="0 0 10 10" fill="currentColor"><path d="M3 1l5 4-5 4z"/></svg>
-          <span>Attached Tabs</span>
+          <span>已连接标签页</span>
         </div>
         <div class="tabs-list" id="tabs-list"></div>
       </div>
@@ -464,7 +479,7 @@
           <circle cx="8" cy="8" r="2.5"/>
           <path d="M13.5 8a5.5 5.5 0 01-.4 2.1l1.2 1.2-1.5 1.5-1.2-1.2A5.5 5.5 0 018 13.5a5.5 5.5 0 01-2.1-.4l-1.2 1.2-1.5-1.5 1.2-1.2A5.5 5.5 0 012.5 8c0-.7.1-1.4.4-2.1L1.7 4.7l1.5-1.5 1.2 1.2A5.5 5.5 0 018 2.5c.7 0 1.4.1 2.1.4l1.2-1.2 1.5 1.5-1.2 1.2c.3.7.4 1.4.4 2.1z"/>
         </svg>
-        Settings
+        设置
       </button>
     </div>
 

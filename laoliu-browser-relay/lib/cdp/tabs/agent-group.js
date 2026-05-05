@@ -1,14 +1,14 @@
 /**
  * Agent tab group management.
  *
- * Creates and manages a Chrome tab group labeled "Accio Agent"
+ * Creates and manages a Chrome tab group labeled "LaoLiu Agent"
  * to visually organize agent-controlled tabs.
  *
  * All addTab calls are serialized via a promise queue to prevent
  * concurrent calls from each creating separate tab groups.
  *
  * On reconnect, the manager attempts to find and reuse an existing
- * "Accio Agent" group rather than creating a duplicate.
+ * "LaoLiu Agent" group rather than creating a duplicate.
  */
 
 import { createLogger } from '../../logger.js'
@@ -20,7 +20,7 @@ const TAB_GROUP_COLOR = 'blue'
 
 /**
  * Match groups whose title is exactly TAB_GROUP_TITLE or ends with it
- * (e.g. "⠋ Accio Agent" while spinner is running).
+ * (e.g. "⠋ LaoLiu Agent" while spinner is running).
  */
 function isAgentGroup(group) {
   return group.title === TAB_GROUP_TITLE || group.title?.endsWith(` ${TAB_GROUP_TITLE}`)

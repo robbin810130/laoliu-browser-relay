@@ -1,5 +1,5 @@
 /**
- * Accio Browser Relay — MV3 Service Worker entry point.
+ * LaoLiu Browser Relay — MV3 Service Worker entry point.
  *
  * Thin orchestration layer: wires up relay, tabs, and CDP modules,
  * then registers Chrome event listeners.

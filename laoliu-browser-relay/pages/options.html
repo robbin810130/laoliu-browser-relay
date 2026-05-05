@@ -9,24 +9,25 @@
   <body>
     <div class="page">
 
+      <!-- Brand Header -->
       <div class="header anim-entrance" style="--delay:0">
         <div class="header-icon" aria-hidden="true">
           <img src="../icons/icon128.png" alt="" />
         </div>
         <div class="header-text">
-          <h1>LaoLiu Browser Relay <span class="version-badge" id="version-badge"></span></h1>
-          <p>Connect your browser to Accio.</p>
+          <h1>老六浏览器中继 <span class="version-badge" id="version-badge"></span></h1>
+          <p>通过 Relay Server 让 AI Agent 控制你的浏览器</p>
         </div>
       </div>
 
-      <!-- Toggle + status -->
+      <!-- Connection Status -->
       <div class="status-card anim-entrance" style="--delay:1" id="status-card" data-state="disabled">
         <div class="status-glow"></div>
         <div class="status-row">
           <span class="status-indicator"></span>
-          <span class="status-label" id="status-label">Checking…</span>
+          <span class="status-label" id="status-label">检测中…</span>
           <span class="status-meta" id="status-meta"></span>
-          <label class="toggle" title="Enable / disable relay">
+          <label class="toggle" title="启用 / 禁用中继连接">
             <input type="checkbox" id="relay-toggle" />
             <span class="toggle-track"></span>
           </label>
@@ -37,101 +38,101 @@
 
       <!-- Attached tabs -->
       <div class="section anim-entrance" style="--delay:2; display:none" id="tabs-section">
-        <div class="section-label">Attached Tabs</div>
+        <div class="section-label">已连接的标签页</div>
         <div class="card">
           <div id="tabs-list" class="tab-list"></div>
-          <div id="tabs-empty" class="tab-list-empty">No tabs attached</div>
+          <div id="tabs-empty" class="tab-list-empty">暂无连接的标签页</div>
         </div>
       </div>
 
-      <!-- Collapsible: Quick Start -->
+      <!-- Quick Start -->
       <details class="collapsible anim-entrance" style="--delay:2">
         <summary class="collapsible-trigger">
           <svg class="collapsible-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 4 10 8 6 12"/></svg>
-          <span>Quick Start</span>
+          <span>快速上手</span>
         </summary>
         <div class="collapsible-body">
           <div class="card">
             <ol class="steps">
-              <li>Make sure <strong>老六</strong> is running with browser control enabled.</li>
-              <li>The relay connects automatically — a green dot on the icon means ready.</li>
-              <li>Ask Accio a browser-related question — it can now see and control your tabs.</li>
+              <li>确保 <strong>Relay Server</strong> 已启动（默认端口 9236）</li>
+              <li>扩展会自动连接 — 图标上出现绿点即表示就绪</li>
+              <li>通过 MCP 客户端（WorkBuddy / Claude Desktop / Cursor 等）发送浏览器指令即可</li>
             </ol>
           </div>
         </div>
       </details>
 
-      <!-- Collapsible: How It Works -->
+      <!-- How It Works -->
       <details class="collapsible anim-entrance" style="--delay:3">
         <summary class="collapsible-trigger">
           <svg class="collapsible-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 4 10 8 6 12"/></svg>
-          <span>How It Works</span>
+          <span>工作原理</span>
         </summary>
         <div class="collapsible-body">
           <div class="card">
-            <div class="card-title">Always-on relay</div>
-            <div class="card-body">The relay is enabled by default and connects automatically when Accio is running. Use the toggle above to pause if needed. Agent-opened tabs are grouped under an <strong>"Accio Agent"</strong> tab group.</div>
+            <div class="card-title">自动中继</div>
+            <div class="card-body">中继默认启用，Relay Server 运行时自动连接。使用上方开关可暂停。Agent 打开的标签页会归入 <strong>"LaoLiu Agent"</strong> 标签组。</div>
           </div>
           <div class="card">
-            <div class="card-title">Auto-reconnect</div>
-            <div class="card-body">If the connection drops, the extension reconnects automatically. No manual intervention needed.</div>
+            <div class="card-title">自动重连</div>
+            <div class="card-body">连接断开后，扩展会自动重新连接，无需手动干预。</div>
           </div>
           <div class="card">
-            <div class="card-title">Tab safety</div>
-            <div class="card-body">Your existing tabs are protected — the agent can only close tabs it opened. Personal tabs are never affected.</div>
+            <div class="card-title">标签安全</div>
+            <div class="card-body">你现有的标签页受保护 — Agent 只能关闭它自己打开的标签页，个人标签页不受影响。</div>
           </div>
         </div>
       </details>
 
-      <!-- Collapsible: Status Indicators -->
+      <!-- Status Indicators -->
       <details class="collapsible anim-entrance" style="--delay:4">
         <summary class="collapsible-trigger">
           <svg class="collapsible-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 4 10 8 6 12"/></svg>
-          <span>Status Indicators</span>
+          <span>状态指示</span>
         </summary>
         <div class="collapsible-body">
           <div class="card">
             <div class="badge-grid">
               <span class="indicator-dot indicator-dot--green"></span>
-              <span class="badge-text">Connected — agent can control your tabs</span>
+              <span class="badge-text">已连接 — Agent 可以控制你的标签页</span>
               <span class="indicator-dot indicator-dot--yellow"></span>
-              <span class="badge-text">Connecting / reconnecting to local relay server</span>
+              <span class="badge-text">正在连接 / 重连到 Relay Server</span>
               <span class="indicator-dot indicator-dot--dim"></span>
-              <span class="badge-text">Relay disabled — no indicator</span>
+              <span class="badge-text">中继已禁用 — 无指示灯</span>
             </div>
           </div>
         </div>
       </details>
 
-      <!-- Collapsible: Troubleshooting -->
+      <!-- Troubleshooting -->
       <details class="collapsible anim-entrance" style="--delay:5">
         <summary class="collapsible-trigger">
           <svg class="collapsible-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 4 10 8 6 12"/></svg>
-          <span>Troubleshooting</span>
+          <span>故障排查</span>
         </summary>
         <div class="collapsible-body">
           <div class="card">
-            <div class="card-title">Stays on yellow dot (connecting)</div>
-            <div class="card-body">Relay server not reachable. Ensure Accio is running with browser control enabled.</div>
+            <div class="card-title">一直显示黄点（连接中）</div>
+            <div class="card-body">Relay Server 不可达。请确认 Relay Server 已启动，默认端口 9236。</div>
           </div>
           <div class="card">
-            <div class="card-title">Pages not responding</div>
-            <div class="card-body">Internal Chrome pages (<code>chrome://</code>) cannot be controlled. Navigate to a regular webpage.</div>
+            <div class="card-title">页面无法操控</div>
+            <div class="card-body">Chrome 内部页面（<code>chrome://</code>）无法被控制，请导航到普通网页。</div>
           </div>
         </div>
       </details>
 
-      <!-- Collapsible: Settings -->
+      <!-- Settings -->
       <details class="collapsible anim-entrance" style="--delay:6">
         <summary class="collapsible-trigger">
           <svg class="collapsible-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 4 10 8 6 12"/></svg>
-          <span>Settings</span>
+          <span>高级设置</span>
         </summary>
         <div class="collapsible-body">
           <div class="card">
-            <div class="card-title">Tab Group Behavior</div>
+            <div class="card-title">标签组行为</div>
             <div class="setting-row">
-              <span class="setting-label">Close "Accio Agent" tab group when relay is disabled</span>
+              <span class="setting-label">禁用中继时关闭 "LaoLiu Agent" 标签组</span>
               <label class="mini-toggle">
                 <input type="checkbox" id="closeGroupOnDisable" />
                 <span class="mini-toggle-track"></span>
@@ -139,22 +140,22 @@
             </div>
           </div>
           <div class="card">
-            <div class="card-title">Control Port</div>
-            <div class="card-body">Only change if you use a custom port in Accio config.</div>
+            <div class="card-title">控制端口</div>
+            <div class="card-body">仅在使用了自定义端口时需要修改。</div>
             <div class="port-row">
               <input id="port" inputmode="numeric" pattern="[0-9]*" placeholder="9234" />
-              <button id="save" type="button">Save</button>
+              <button id="save" type="button">保存</button>
             </div>
-            <div class="port-hint">Default: <code>9234</code>. Relay = control port + 2.</div>
+            <div class="port-hint">默认: <code>9234</code>. Relay 端口 = 控制端口 + 2.</div>
             <div class="port-status" id="port-status"></div>
           </div>
           <div class="card">
             <div class="card-title" style="display:flex;align-items:center;justify-content:space-between">
-              CDP Logs
-              <button id="logs-refresh" type="button" class="logs-refresh-btn">Refresh</button>
+              CDP 日志
+              <button id="logs-refresh" type="button" class="logs-refresh-btn">刷新</button>
             </div>
             <div id="logs-container" class="logs-container">
-              <div class="logs-empty">No log entries yet</div>
+              <div class="logs-empty">暂无日志</div>
             </div>
           </div>
         </div>

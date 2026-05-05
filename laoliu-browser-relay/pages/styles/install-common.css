@@ -1,14 +1,14 @@
 :root {
   color-scheme: light dark;
-  --accent: #14b8a6;
+  --accent: #3b52a5;
   --accent-soft: color-mix(in oklab, var(--accent) 10%, transparent);
   --accent-border: color-mix(in oklab, var(--accent) 25%, transparent);
-  --green: #22C55E;
+  --green: #2ecc71;
   --surface: color-mix(in oklab, canvas 95%, canvasText 5%);
   --border: color-mix(in oklab, canvasText 8%, transparent);
   --muted: color-mix(in oklab, canvasText 50%, transparent);
   --dim: color-mix(in oklab, canvasText 25%, transparent);
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Noto Sans SC", system-ui, sans-serif;
   line-height: 1.6;
   color: canvasText;
 }

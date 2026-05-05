@@ -85,7 +85,7 @@ relayToggle.addEventListener('change', async () => {
     await chrome.runtime.sendMessage({ type: 'toggleRelay' })
     await queryBackgroundStatus()
   } catch (err) {
-    console.warn('[accio-options] toggle failed:', err)
+    console.warn('[laoliu-options] toggle failed:', err)
   } finally {
     toggleBusy = false
   }

@@ -2,14 +2,14 @@
  * Debug logger — controlled by a module-level flag.
  *
  * When `DEBUG` is true, all log/warn/error calls forward to the console
- * with a [accio-relay] prefix and a module tag. When false, only warn/error emit.
+ * with a [laoliu-relay] prefix and a module tag. When false, only warn/error emit.
  *
  * Usage:
  *   import { createLogger, setDebug } from './logger.js'
  *   const log = createLogger('relay')
  *   setDebug(true)
- *   log.debug('connected', { port: 9236 })  // → console.debug('[accio:relay] connected', {port:9236})
- *   log.info('ok')                           // → console.info('[accio:relay] ok')
+ *   log.debug('connected', { port: 9236 })  // → console.debug('[laoliu:relay] connected', {port:9236})
+ *   log.info('ok')                           // → console.info('[laoliu:relay] ok')
  *   log.warn('slow')                         // always prints
  *   log.error('fail', err)                   // always prints
  */

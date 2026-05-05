@@ -1,6 +1,6 @@
-# Accio Browser Relay — Chrome Extension
+# LaoLiu Browser Relay — Chrome Extension
 
-Connect the Accio Work agent to your Chrome browser so it can see and interact with web pages via CDP (Chrome DevTools Protocol).
+Connect the LaoLiu Browser agent to your Chrome browser so it can see and interact with web pages via CDP (Chrome DevTools Protocol).
 
 ## Installation
 
@@ -11,15 +11,15 @@ Connect the Accio Work agent to your Chrome browser so it can see and interact w
 
 ## Usage
 
-1. Make sure Accio is running with browser control enabled
+1. Make sure LaoLiu is running with browser control enabled
 2. Click the toolbar icon — badge shows **ON** when connected
 3. Navigate to any webpage
-4. Send a browser-related query to Accio — it can now control your tabs
+4. Send a browser-related query to LaoLiu — it can now control your tabs
 
 ## File Structure
 
 ```
-accio-browser-relay/
+laoliu-browser-relay/
 ├── background.js              # Service worker entry — relay lifecycle, event listeners
 ├── manifest.json              # Extension manifest (MV3)
 ├── options.html               # Options page — usage guide & advanced settings
@@ -64,7 +64,7 @@ accio-browser-relay/
 
 | Symptom | Solution |
 |---------|----------|
-| Red `!` badge | Make sure Accio is running with browser control enabled |
+| Red `!` badge | Make sure LaoLiu is running with browser control enabled |
 | Page not responding | Internal pages (`chrome://`, extensions) can't be controlled — use a regular webpage |
 | Stuck on `…` | Click the icon to cancel, then click again to retry |
 
@@ -75,7 +75,7 @@ accio-browser-relay/
 ```jsonc
 {
   "manifest_version": 3,          // MV3 (required for modern Chrome extensions)
-  "name": "Accio Browser Relay",  // Display name in chrome://extensions
+  "name": "LaoLiu Browser Relay",  // Display name in chrome://extensions
   "version": "0.1.0",             // Extension version (semver)
   "description": "...",           // Short description
 
@@ -108,7 +108,7 @@ accio-browser-relay/
   },
 
   "action": {
-    "default_title": "Accio Browser Relay (click to attach/detach)",
+    "default_title": "LaoLiu Browser Relay (click to attach/detach)",
     "default_icon": { ... }    // Toolbar icon (same as extension icons)
   },
 
