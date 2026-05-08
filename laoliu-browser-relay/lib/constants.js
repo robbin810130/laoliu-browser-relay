@@ -2,7 +2,7 @@
  * Shared constants for the LaoLiu Browser Relay extension.
  */
 
-export const DEFAULT_CONTROL_PORT = 9234
+export const DEFAULT_CONTROL_PORT = 19234
 export const RELAY_PORT_OFFSET = 2
 
 const MAX_CONTROL_PORT = 65535 - RELAY_PORT_OFFSET

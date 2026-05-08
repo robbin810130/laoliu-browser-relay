@@ -15,6 +15,14 @@ import {
   extGetViewportInfo, extEnsureZoom, extCaptureViewport,
   extExtractContent, extMarkElements, extClick, extInput,
 } from '../../content_script/extension-ops.js'
+import { extPressKey } from '../../content_script/press-key.js'
+import { extScroll } from '../../content_script/scroll.js'
+import { extFindKeyword } from '../../content_script/find-keyword.js'
+import { extMoveMouse } from '../../content_script/move-mouse.js'
+import { renderHighlightedScreenshot } from '../../content_script/highlight-screenshot.js'
+import { extExtractContentEnhanced } from '../../content_script/extract-readability.js'
+import { extInputEnhanced } from '../../content_script/input-enhanced.js'
+import { extActionMask } from '../../content_script/action-mask.js'
 import { RUNTIME_ENABLE_DELAY, CDP_COMMAND_TIMEOUT, withTimeout } from './utils.js'
 
 const MAX_QUEUE_DEPTH = 100
@@ -131,9 +139,30 @@ export function createDispatcher(mgr) {
         return extCaptureViewport(tabId, params)
       }
       if (method === 'Extension.extractContent') return extExtractContent(tabId)
+      if (method === 'Extension.extractContentEnhanced') return extExtractContentEnhanced(tabId)
       if (method === 'Extension.markElements') return extMarkElements(tabId, params)
+      if (method === 'Extension.captureHighlightedViewport') {
+        await mgr.ensureAttached(tabId)
+        const [elementsData, screenshotData] = await Promise.all([
+          extMarkElements(tabId, params),
+          extCaptureViewport(tabId, params),
+        ])
+        const annotated = await renderHighlightedScreenshot(
+          screenshotData.data,
+          elementsData.elements,
+          screenshotData.width,
+          screenshotData.height,
+        )
+        return { data: annotated, width: screenshotData.width, height: screenshotData.height, elements: elementsData.elements }
+      }
       if (method === 'Extension.click') return extClick(tabId, params)
       if (method === 'Extension.input') return extInput(tabId, params)
+      if (method === 'Extension.inputEnhanced') return extInputEnhanced(tabId, params)
+      if (method === 'Extension.pressKey') return extPressKey(tabId, params)
+      if (method === 'Extension.scroll') return extScroll(tabId, params)
+      if (method === 'Extension.findKeyword') return extFindKeyword(tabId, params)
+      if (method === 'Extension.moveMouse') return extMoveMouse(tabId, params)
+      if (method === 'Extension.actionMask') return extActionMask(tabId, params)
 
       // ── Standard CDP forwarding (requires debugger attach) ──
       const ok = await mgr.ensureAttached(tabId)

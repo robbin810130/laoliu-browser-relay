@@ -19,7 +19,7 @@
  *
  * 环境变量（可选覆盖）：
  *   PHOENIX_PROJECT_DIR  — 项目根目录（默认从 index.js 位置推导 ../）
- *   PHOENIX_RELAY_URL    — Relay Server URL（默认 http://127.0.0.1:9236）
+ *   PHOENIX_RELAY_URL    — Relay Server URL（默认 http://127.0.0.1:19236）
  *   PHOENIX_RELAY_TOKEN  — Auth token（默认自动从 keys/.auth_token 读取）
  *   PHOENIX_PYTHON       — Python 可执行文件路径（默认自动查找）
  *   PHOENIX_AUTO_START   — 是否自动启动 Relay Server（默认 true）
@@ -50,7 +50,7 @@ const TOKEN_FILE = path.join(KEYS_DIR, ".auth_token");
 // ============================================================
 // 配置
 // ============================================================
-const RELAY_URL = process.env.PHOENIX_RELAY_URL || "http://127.0.0.1:9236";
+const RELAY_URL = process.env.PHOENIX_RELAY_URL || "http://127.0.0.1:19236";
 const RELAY_WS_URL = RELAY_URL.replace(/^http/, "ws");
 const AUTO_START = process.env.PHOENIX_AUTO_START !== "false"; // 默认 true
 
@@ -278,7 +278,7 @@ async function ensureConnection() {
     throw new Error(
       "Relay Server 不可用。请确认：\n" +
       "1. Relay Server 已启动（或设置 PHOENIX_AUTO_START=true 自动启动）\n" +
-      "2. 端口 9236 未被占用\n" +
+      "2. 端口 19236 未被占用\n" +
       `3. 项目目录正确: ${PROJECT_DIR}`
     );
   }
@@ -495,6 +495,98 @@ const TOOLS = [
       required: ["method"],
     },
   },
+  // ── Extension.* 高级工具 ──
+  {
+    name: "browser_press_key",
+    description: "模拟键盘按键，支持组合键如 Ctrl+A、Shift+Enter、F1-F12 等。可向当前焦点元素发送按键事件。",
+    inputSchema: {
+      type: "object",
+      properties: {
+        key: { type: "string", description: "按键或组合键，例如 Enter、Tab、Escape、Ctrl+A、Shift+Enter、F5" },
+      },
+      required: ["key"],
+    },
+  },
+  {
+    name: "browser_scroll",
+    description: "滚动页面或容器。支持方向滚动、滚到底部、指定滚动量。",
+    inputSchema: {
+      type: "object",
+      properties: {
+        direction: { type: "string", enum: ["up", "down", "left", "right"], description: "滚动方向（默认 down）", default: "down" },
+        amount: { type: "integer", description: "滚动像素量（默认视口高度 60%）" },
+        toEnd: { type: "boolean", description: "滚动到边界（底部/顶部）", default: false },
+      },
+    },
+  },
+  {
+    name: "browser_find_keyword",
+    description: "在页面内搜索关键词，返回匹配结果及上下文。支持中英文，使用句子分割提供精准上下文。",
+    inputSchema: {
+      type: "object",
+      properties: {
+        keyword: { type: "string", description: "要搜索的关键词" },
+      },
+      required: ["keyword"],
+    },
+  },
+  {
+    name: "browser_move_mouse",
+    description: "将鼠标移动到指定元素或坐标位置，触发 hover 状态（如显示下拉菜单、工具提示等）。",
+    inputSchema: {
+      type: "object",
+      properties: {
+        selector: { type: "string", description: "CSS 选择器（与 index 二选一）" },
+        index: { type: "integer", description: "元素索引编号（需先 markElements）" },
+        x: { type: "number", description: "X 坐标" },
+        y: { type: "number", description: "Y 坐标" },
+      },
+    },
+  },
+  {
+    name: "browser_screenshot_annotated",
+    description: "截取页面并自动标注所有可交互元素（按钮、输入框、链接等），每个元素带编号标签。返回带标注的截图和元素列表。",
+    inputSchema: {
+      type: "object",
+      properties: {
+        maxElements: { type: "integer", description: "最大标注元素数（默认 200）", default: 200 },
+        format: { type: "string", enum: ["png", "jpeg"], description: "图片格式", default: "png" },
+      },
+    },
+  },
+  {
+    name: "browser_extract_content",
+    description: "提取页面正文内容，返回 Markdown 格式文本。双路径提取：DOM walker + Readability 评分，自动选择最优结果。",
+    inputSchema: {
+      type: "object",
+      properties: {
+        enhanced: { type: "boolean", description: "使用增强提取（Readability 评分），默认 false", default: false },
+      },
+    },
+  },
+  {
+    name: "browser_input_rich",
+    description: "向富文本编辑器输入内容。自动检测并处理 DraftEditor、Slate、ProseMirror、contenteditable 等编辑器类型。",
+    inputSchema: {
+      type: "object",
+      properties: {
+        selector: { type: "string", description: "CSS 选择器（与 index 二选一）" },
+        index: { type: "integer", description: "元素索引编号（需先 markElements）" },
+        text: { type: "string", description: "要输入的文本" },
+      },
+      required: ["text"],
+    },
+  },
+  {
+    name: "browser_action_mask",
+    description: "控制页面操作遮罩。ongoing=阻止用户操作+显示\"老六正在操作\"，idle=移除遮罩，takeover=透明遮罩允许用户操作。",
+    inputSchema: {
+      type: "object",
+      properties: {
+        state: { type: "string", enum: ["ongoing", "idle", "takeover"], description: "遮罩状态", default: "ongoing" },
+      },
+    },
+  },
 ];
 
 // ============================================================
@@ -606,6 +698,100 @@ async function handleToolCall(name, args) {
         return { content: [{ type: "text", text: JSON.stringify(resp?.result || resp?.error || resp, null, 2) }] };
       }
 
+      case "browser_press_key": {
+        await ensureConnection();
+        const { sessionId: sid } = await listAndAttach();
+        const resp = await sendCDPCommand("Extension.pressKey", { key: args.key }, { sessionId: sid });
+        const result = resp?.result;
+        return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+      }
+
+      case "browser_scroll": {
+        await ensureConnection();
+        const { sessionId: sid } = await listAndAttach();
+        const params = { direction: args.direction || "down" };
+        if (args.amount != null) params.amount = args.amount;
+        if (args.toEnd) params.toEnd = true;
+        const resp = await sendCDPCommand("Extension.scroll", params, { sessionId: sid });
+        const result = resp?.result;
+        return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+      }
+
+      case "browser_find_keyword": {
+        await ensureConnection();
+        const { sessionId: sid } = await listAndAttach();
+        const resp = await sendCDPCommand("Extension.findKeyword", { keyword: args.keyword }, { sessionId: sid });
+        const result = resp?.result;
+        if (!result?.success) return { content: [{ type: "text", text: `搜索失败: ${result?.error || "未知错误"}` }], isError: true };
+        const lines = result.matches.map((m, i) => `[${i + 1}] ...${m.context}...`);
+        const text = `找到 ${result.count} 处匹配 "${result.keyword}":\n${lines.join("\n")}`;
+        return { content: [{ type: "text", text }] };
+      }
+
+      case "browser_move_mouse": {
+        await ensureConnection();
+        const { sessionId: sid } = await listAndAttach();
+        const params = {};
+        if (args.selector) params.selector = args.selector;
+        if (args.index != null) params.index = args.index;
+        if (args.x != null) params.x = args.x;
+        if (args.y != null) params.y = args.y;
+        const resp = await sendCDPCommand("Extension.moveMouse", params, { sessionId: sid });
+        const result = resp?.result;
+        return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+      }
+
+      case "browser_screenshot_annotated": {
+        await ensureConnection();
+        const { sessionId: sid } = await listAndAttach();
+        const params = {};
+        if (args.maxElements) params.maxElements = args.maxElements;
+        if (args.format) params.format = args.format;
+        const resp = await sendCDPCommand("Extension.captureHighlightedViewport", params, { sessionId: sid, timeout: 30000 });
+        const result = resp?.result;
+        if (!result?.data) return { content: [{ type: "text", text: "截图失败" }], isError: true };
+        const elements = (result.elements || []).map(e => `[${e.idx}] <${e.tag}> ${e.text || "(无文本)"}`).join("\n");
+        return {
+          content: [
+            { type: "image", data: result.data, mimeType: "image/png" },
+            { type: "text", text: `标注了 ${result.elements?.length || 0} 个可交互元素:\n${elements}` },
+          ],
+        };
+      }
+
+      case "browser_extract_content": {
+        await ensureConnection();
+        const { sessionId: sid } = await listAndAttach();
+        const method = args.enhanced ? "Extension.extractContentEnhanced" : "Extension.extractContent";
+        const resp = await sendCDPCommand(method, {}, { sessionId: sid, timeout: 15000 });
+        const result = resp?.result;
+        if (!result) return { content: [{ type: "text", text: "提取失败" }], isError: true };
+        const methodLabel = result.method ? ` (${result.method})` : "";
+        return { content: [{ type: "text", text: `标题: ${result.title}\nURL: ${result.url}\n\n${result.content}${methodLabel}` }] };
+      }
+
+      case "browser_input_rich": {
+        await ensureConnection();
+        const { sessionId: sid } = await listAndAttach();
+        const params = { text: args.text };
+        if (args.selector) params.selector = args.selector;
+        if (args.index != null) params.index = args.index;
+        const resp = await sendCDPCommand("Extension.inputEnhanced", params, { sessionId: sid });
+        const result = resp?.result;
+        if (!result?.success) return { content: [{ type: "text", text: `输入失败: ${result?.error || "未知错误"}` }], isError: true };
+        return { content: [{ type: "text", text: `已输入（${result.method}）: "${args.text}"` }] };
+      }
+
+      case "browser_action_mask": {
+        await ensureConnection();
+        const { sessionId: sid } = await listAndAttach();
+        const state = args.state || "ongoing";
+        const resp = await sendCDPCommand("Extension.actionMask", { state }, { sessionId: sid });
+        const result = resp?.result;
+        const stateText = { ongoing: "已开启操作遮罩 🔒", idle: "已移除操作遮罩 ✅", takeover: "已切换为接管模式" };
+        return { content: [{ type: "text", text: stateText[state] || `遮罩状态: ${state}` }] };
+      }
+
       default:
         return { content: [{ type: "text", text: `未知工具: ${name}` }], isError: true };
     }
@@ -618,7 +804,7 @@ async function handleToolCall(name, args) {
 // MCP Server 启动
 // ============================================================
 const server = new Server(
-  { name: "laoliu-browser-relay", version: "2.0.0" },
+  { name: "laoliu-browser-relay", version: "2.3.0" },
   { capabilities: { tools: {} } }
 );
 

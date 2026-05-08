@@ -20,8 +20,8 @@ PUBLIC_KEY_PATH = KEYS_DIR / "public_key.pem"
 # 网络配置
 # ============================================================
 RELAY_HOST = "127.0.0.1"        # 只监听 loopback
-RELAY_PORT = 9236                # 默认端口（与 Accio 一致）
-RELAY_PORT_ALT = 9237            # 备用端口
+RELAY_PORT = 19236               # 默认端口（避开 Accio 的 9236）
+RELAY_PORT_ALT = 19237            # 备用端口
 
 # ============================================================
 # 超时配置（与 Accio 对齐）
